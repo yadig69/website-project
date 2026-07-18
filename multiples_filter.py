@@ -12,3 +12,6 @@ for num in numbers:
 print(multiples_of_three)
 
 # Hint: To check if a number is perfectly divisible by something, use the modulo operator (%), which calculates the remainder of a division. If num % 3 == 0, it’s a multiple of 3!
+print(5 == '5')
+
+

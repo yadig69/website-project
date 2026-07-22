@@ -27,6 +27,8 @@ while True:
     # Option 1: Search / Look up a contact
     if choice == "1":
         search_name = input("Enter the name you want to search for: ").strip()
+        # normalize the input to lowercase for case-insensitive search
+        search_name = search_name.lower()
         
         # check if name exist as a key in the directory
         if search_name in phone_book:

@@ -14,4 +14,14 @@ print(multiples_of_three)
 # Hint: To check if a number is perfectly divisible by something, use the modulo operator (%), which calculates the remainder of a division. If num % 3 == 0, it’s a multiple of 3!
 print(5 == '5')
 
+name_length = "gregory singleton"
+print(name_length.title())
+
+itg = 13
+flt =1.3
+si = str(itg)
+sf = str(flt)
+
+print(si +''+ sf)
+
 

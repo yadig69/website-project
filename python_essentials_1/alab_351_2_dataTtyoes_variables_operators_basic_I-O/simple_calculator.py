@@ -9,21 +9,21 @@ operation = input("Choose an operation (+, -, *, /): ")
 if operation == "+":
     result = number_one + number_two
     print(f"{number_one} + {number_two} = {result}")
-    print("Thank you for using the calculator!")
+   
 elif operation == "-":
     result = number_one - number_two
     print(f"{number_one} - {number_two} = {result}")
-    print("Thank you for using the calculator!")
+    
 elif operation == "*":
      result = number_one * number_two
      print(f"{number_one} * {number_two} = {result}")
-     print("Thank you for using the calculator!")
+     
 elif operation == "/":
     if number_two == 0:
         print("Error: Division by zero is not allowed.")
         result = number_one / number_two
         print(f"{number_one} / {number_two} = {result}")
-        print("Thank you for using the calculator!")
+        
         exit()
 else:
     print("Error: Invalid operation. Please choose +, -, *, or /.")

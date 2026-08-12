@@ -22,3 +22,4 @@ students["Bob"] = 87
 # Uses a loop to print out each student’s name and grade in a formatted way, e.g., "Alice: 90".
 for name, grade in students.items():
     print(f"{name}: {grade}")
+

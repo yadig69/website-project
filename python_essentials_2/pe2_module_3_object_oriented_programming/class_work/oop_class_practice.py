@@ -2,7 +2,7 @@ class dog:
     def __init__(self, name, breed):
         self.name = name
         self.breed = breed
-
+# creates an instance of the class
 def bark(self):
     return f"{self.name} says Woof!"
 

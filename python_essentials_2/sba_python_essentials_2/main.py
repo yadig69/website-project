@@ -21,7 +21,7 @@ class ToDoApp(ctk.CTk):
 
         # --- Input Frame ---
         input_frame = ctk.CTkFrame(self)
-        input_frame.pack(padx=20, pady=5, fill="x")
+        input_frame.pack(padx=20, pady=5)
 
         # task title input
         ctk.CTkLabel(input_frame, text="Title:").grid(row=0, column=0, padx=5, pady=5, sticky="w")
@@ -40,12 +40,12 @@ class ToDoApp(ctk.CTk):
 
         # --- Buttons ---
         btn_frame = ctk.CTkFrame(self)
-        btn_frame.pack(padx=20, pady=5, fill="x")
+        btn_frame.pack(pady=5)
 
-        ctk.CTkButton(btn_frame, text="Add Task", command=self.handle_add).grid(row=0, column=0, padx=5, pady=5)
-        ctk.CTkButton(btn_frame, text="Complete Task", command=self.handle_complete).grid(row=0, column=1, padx=5, pady=5)
-        ctk.CTkButton(btn_frame, text="Delete Task", command=self.handle_delete).grid(row=0, column=2, padx=5, pady=5)
-        ctk.CTkButton(btn_frame, text="Save Tasks", command=self.handle_save).grid(row=0, column=3, padx=5, pady=5)
+        ctk.CTkButton(btn_frame, text="Add Task", command=self.handle_add).grid(row=0, column=0, padx=10, pady=5)
+        ctk.CTkButton(btn_frame, text="Complete Task", command=self.handle_complete).grid(row=0, column=1, padx=10, pady=5)
+        ctk.CTkButton(btn_frame, text="Delete Task", command=self.handle_delete).grid(row=0, column=2, padx=10, pady=5)
+        ctk.CTkButton(btn_frame, text="Save Tasks", command=self.handle_save).grid(row=0, column=3, padx=10, pady=5)
 
         # --- Task Display ---
         ctk.CTkLabel(self, text="Tasks:", font=("Arial", 16)).pack(pady=5)

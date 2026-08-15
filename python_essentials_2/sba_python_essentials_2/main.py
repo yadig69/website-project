@@ -17,7 +17,7 @@ class ToDoApp(ctk.CTk):
         self.task_list = []
 
         # --- Title ---
-        ctk.CTkLabel(self, text="To-Do List Manager", font=("Arial", 24, "bold")).pack(pady=10)
+        ctk.CTkLabel(self, text="Task Manager", font=("Arial", 24, "bold")).pack(pady=10)
 
         # --- Input Frame ---
         input_frame = ctk.CTkFrame(self)

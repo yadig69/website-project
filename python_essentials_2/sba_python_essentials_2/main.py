@@ -1,69 +1,137 @@
-# import colorama for colored terminal output
-import colorama
-from colorama import Fore, Back, Style
-
-# import date utilities for parsing and comparing due dates
-from datetime import datetime, date
-
-# import task management functions from todolist module
+import customtkinter as ctk
+from datetime import datetime
 from todolist import add_task, complete_task, delete_task, list_task, save_tasks
 
-def To_Do_List():
-    # initialize an empty list to store tasks
-    Task = []
+# set appearance and color theme
+ctk.set_appearance_mode("System")
+ctk.set_default_color_theme("blue")
 
-    # keep the menu running until the user chooses to quit
-    while True:
-        # display the menu options
-        print("\nOptions:")
-        print("1. Add task")
-        print("2. Mark task as complete")
-        print("3. Delete task")
-        print("4. List tasks")
-        print("5. Quit")
+class ToDoApp(ctk.CTk):
+    def __init__(self):
+        super().__init__()
+        # window settings
+        self.title("To-Do List Manager")
+        self.geometry("720x600")
 
-        # get the user's menu selection
-        choice = input("Enter your choice(1 - 4): ").strip()
+        # internal task list
+        self.task_list = []
 
-        if choice == "1":
-            # prompt for task title and optional due date
-            title = input("Enter task title: ")
-            due_date = input("Enter due date (YYYY-MM-DD) or press Enter to skip: ")
-            if due_date:
-                # parse the due date string into a datetime object
-                due_date = datetime.strptime(due_date, "%Y-%m-%d")
+        # --- Title ---
+        ctk.CTkLabel(self, text="To-Do List Manager", font=("Arial", 24, "bold")).pack(pady=10)
+
+        # --- Input Frame ---
+        input_frame = ctk.CTkFrame(self)
+        input_frame.pack(padx=20, pady=5, fill="x")
+
+        # task title input
+        ctk.CTkLabel(input_frame, text="Title:").grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        self.title_entry = ctk.CTkEntry(input_frame, width=200)
+        self.title_entry.grid(row=0, column=1, padx=5, pady=5)
+
+        # task description input
+        ctk.CTkLabel(input_frame, text="Description:").grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        self.desc_entry = ctk.CTkEntry(input_frame, width=200)
+        self.desc_entry.grid(row=1, column=1, padx=5, pady=5)
+
+        # due date input
+        ctk.CTkLabel(input_frame, text="Due Date (YYYY-MM-DD):").grid(row=2, column=0, padx=5, pady=5, sticky="w")
+        self.date_entry = ctk.CTkEntry(input_frame, width=200)
+        self.date_entry.grid(row=2, column=1, padx=5, pady=5)
+
+        # --- Buttons ---
+        btn_frame = ctk.CTkFrame(self)
+        btn_frame.pack(padx=20, pady=5, fill="x")
+
+        ctk.CTkButton(btn_frame, text="Add Task", command=self.handle_add).grid(row=0, column=0, padx=5, pady=5)
+        ctk.CTkButton(btn_frame, text="Complete Task", command=self.handle_complete).grid(row=0, column=1, padx=5, pady=5)
+        ctk.CTkButton(btn_frame, text="Delete Task", command=self.handle_delete).grid(row=0, column=2, padx=5, pady=5)
+        ctk.CTkButton(btn_frame, text="Save Tasks", command=self.handle_save).grid(row=0, column=3, padx=5, pady=5)
+
+        # --- Task Display ---
+        ctk.CTkLabel(self, text="Tasks:", font=("Arial", 16)).pack(pady=5)
+        self.task_display = ctk.CTkTextbox(self, width=680, height=300)
+        self.task_display.pack(padx=20, pady=5)
+        # configure green tag for completed tasks
+        self.task_display.tag_config("complete", foreground="green")
+
+        # --- Status Label ---
+        self.status_label = ctk.CTkLabel(self, text="", text_color="green")
+        self.status_label.pack(pady=5)
+
+    def refresh_tasks(self):
+        # clear and rewrite the task display box
+        self.task_display.delete("1.0", "end")
+        if not self.task_list:
+            self.task_display.insert("end", "No tasks yet.\n")
+        for task in self.task_list:
+            status = "✓" if task.completed else "○"
+            due_str = task.due_date.strftime("%Y-%m-%d") if task.due_date else "No due date"
+            desc_str = f" - {task.description.strip()}" if task.description and task.description.strip() else ""
+            line = f"{status} {task.title} (Due: {due_str}){desc_str}\n"
+            # insert completed tasks in green, others in default color
+            if task.completed:
+                self.task_display.insert("end", line, "complete")
             else:
-                # no due date provided
-                due_date = None
-            # add the new task to the list
-            add_task(Task, title, due_date)
+                self.task_display.insert("end", line)
 
-        elif choice == "2":
-            # prompt for the task title and mark it as complete
-            title = input("Enter task title to mark as complete: ")
-            complete_task(Task, title)
+    def set_status(self, message, color="green"):
+        # update the status label with a message
+        self.status_label.configure(text=message, text_color=color)
 
-        elif choice == "3":
-            # prompt for the task title and remove it from the list
-            title = input("Enter task title to delete: ")
-            delete_task(Task, title)
+    def handle_add(self):
+        # get values from input fields
+        title = self.title_entry.get().strip()
+        description = self.desc_entry.get().strip()
+        due_date_str = self.date_entry.get().strip()
 
-        elif choice == "4":
-            # display all current tasks
-            list_task(Task)
+        if not title:
+            self.set_status("Title is required.", "red")
+            return
 
-        elif choice == "5":
-            # prompt the user to save tasks before quitting
-            save = input("Would you like to save your tasks before quitting? (y/n): ").strip().lower()
-            if save == "y":
-                save_tasks(Task)
-            print("Goodbye!")
-            break
+        # parse due date if provided
+        due_date = None
+        if due_date_str:
+            try:
+                due_date = datetime.strptime(due_date_str, "%Y-%m-%d")
+            except ValueError:
+                self.set_status("Invalid date format. Use YYYY-MM-DD.", "red")
+                return
 
-        else:
-            # handle any invalid menu input
-            print("Invalid choice. Please try again.")
+        add_task(self.task_list, title, description, due_date)
+        self.set_status(f"Task '{title}' added!")
+        # clear input fields after adding
+        self.title_entry.delete(0, "end")
+        self.desc_entry.delete(0, "end")
+        self.date_entry.delete(0, "end")
+        self.refresh_tasks()
 
-# entry point — runs the program when the file is executed directly
+    def handle_complete(self):
+        # mark the task matching the title as complete
+        title = self.title_entry.get().strip()
+        if not title:
+            self.set_status("Enter a task title to complete.", "red")
+            return
+        complete_task(self.task_list, title)
+        self.set_status(f"Task '{title}' marked as complete!", "green")
+        self.refresh_tasks()
+
+    def handle_delete(self):
+        # delete the task matching the title
+        title = self.title_entry.get().strip()
+        if not title:
+            self.set_status("Enter a task title to delete.", "red")
+            return
+        delete_task(self.task_list, title)
+        self.set_status(f"Task '{title}' deleted!")
+        self.refresh_tasks()
+
+    def handle_save(self):
+        # save all tasks to tasks.csv
+        save_tasks(self.task_list)
+        self.set_status("Tasks saved to tasks.csv!")
+
+
+# entry point — runs the GUI when the file is executed directly
 if __name__ == "__main__":
-    To_Do_List()
+    app = ToDoApp()
+    app.mainloop()

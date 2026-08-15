@@ -1,3 +1,6 @@
+import customtkinter as ctk
+
+
 # import date and datetime for due date parsing and comparison
 from datetime import date, datetime
 
@@ -5,7 +8,7 @@ from datetime import date, datetime
 from sba_task_manager import Task
 
 
-def add_task(task_list: list, title_id: str, due_date: datetime = None):
+def add_task(task_list: list, title_id: str, description = " ", due_date: datetime = None):
     """Add a task to the task list."""
     # start with the due_date as-is
     parsed_date = due_date
@@ -19,8 +22,8 @@ def add_task(task_list: list, title_id: str, due_date: datetime = None):
             print("Invalid date format. Please use YYYY-MM-DD.")
             return
 
-    # create a new Task object with the title and parsed date
-    new_task = Task(title_id, parsed_date)
+    # create a new Task object with the title, parsed date, and description
+    new_task = Task(title_id, parsed_date, description)
     # append the new task to the task list
     task_list.append(new_task)
     print(f"Task '{title_id}' added successfully!")
@@ -33,7 +36,7 @@ def complete_task(task_list: list, title_id: str):
         if task.title == title_id:
             # set completed to True and exit the function
             task.completed = True
-            print(f"Task '{title_id}' marked as complete!")
+            print(f"Task '{title_id}' marked as complete!",  "green")
             return
     # if no matching task was found, notify the user
     print(f"Task '{title_id}' not found.")
@@ -80,4 +83,6 @@ def list_task(task_list):
             status = "✓" if task.completed else "○"
             # format due date or show placeholder if none
             due_date_str = task.due_date.strftime("%Y-%m-%d") if task.due_date else "No due date"
-            print(f"{status} {task.title} (Due: {due_date_str})")
+            # show description if one exists
+            desc_str = f" - {task.description.strip()}" if task.description and task.description.strip() else ""
+            print(f"{status} {task.title} (Due: {due_date_str}){desc_str}")

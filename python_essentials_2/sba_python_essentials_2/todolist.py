@@ -36,7 +36,7 @@ def complete_task(task_list: list, title_id: str):
         if task.title == title_id:
             # set completed to True and exit the function
             task.completed = True
-            print(f"Task '{title_id}' marked as complete!",  "green")
+            print(f"Task '{title_id}' marked as complete!")
             return
     # if no matching task was found, notify the user
     print(f"Task '{title_id}' not found.")
